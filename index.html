@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  input[type="radio"].nav-toggle { display: none; }
+
+  .navbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #222;
+    padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-size: 22px; font-weight: 800; letter-spacing: 1px;
+    color: #f5a623;
+  }
+  .logo span { color: #fff; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links label {
+    padding: 8px 16px; border-radius: 6px;
+    font-size: 14px; font-weight: 500; color: #aaa;
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  .nav-links label:hover { color: #fff; background: #1a1a1a; }
+
+  /* PAGES */
+  .page { display: none; }
+
+  #nav-home:checked ~ .page-home,
+  #nav-menu:checked ~ .page-menu,
+  #nav-about:checked ~ .page-about,
+  #nav-contact:checked ~ .page-contact { display: block; }
+
+  #nav-home:checked ~ .navbar .nav-links label[for="nav-home"],
+  #nav-menu:checked ~ .navbar .nav-links label[for="nav-menu"],
+  #nav-about:checked ~ .navbar .nav-links label[for="nav-about"],
+  #nav-contact:checked ~ .navbar .nav-links label[for="nav-contact"] {
+    color: #f5a623; background: rgba(245,166,35,0.1);
+  }
+
+  /* HERO */
+  .hero {
+    padding: 80px 32px 60px;
+    text-align: center;
+    background: linear-gradient(180deg, #1a1206 0%, #0a0a0a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "🍔";
+    position: absolute;
+    font-size: 200px;
+    opacity: 0.06;
+    top: -20px; right: -20px;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(245,166,35,0.15);
+    color: #f5a623;
+    font-size: 12px; font-weight: 600;
+    padding: 6px 16px; border-radius: 20px;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: 48px; font-weight: 800; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: normal; color: #f5a623;
+  }
+  .hero p {
+    font-size: 18px; color: #888; max-width: 500px; margin: 0 auto 32px;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #f5a623; color: #0a0a0a;
+    font-size: 15px; font-weight: 700;
+    padding: 14px 32px; border-radius: 8px;
+    text-decoration: none; cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+  }
+  .hero-cta:hover { background: #e6951a; transform: translateY(-1px); }
+
+  /* SECTION */
+  .section {
+    padding: 60px 32px;
+    max-width: 960px; margin: 0 auto;
+  }
+  .section-title {
+    font-size: 28px; font-weight: 800; margin-bottom: 8px;
+  }
+  .section-title em { font-style: normal; color: #f5a623; }
+  .section-sub {
+    font-size: 15px; color: #666; margin-bottom: 40px;
+  }
+
+  /* FEATURES */
+  .features {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    padding: 0 32px 60px; max-width: 960px; margin: 0 auto;
+  }
+  .feature-card {
+    background: #141414; border: 1px solid #222; border-radius: 12px;
+    padding: 24px; text-align: center;
+    transition: all 0.2s ease;
+  }
+  .feature-card:hover { border-color: #f5a623; transform: translateY(-2px); }
+  .feature-icon { font-size: 32px; margin-bottom: 12px; }
+  .feature-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .feature-card p { font-size: 13px; color: #777; }
+
+  /* MENU GRID */
+  .menu-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .menu-item {
+    background: #141414; border: 1px solid #1e1e1e; border-radius: 12px;
+    padding: 24px; display: flex; justify-content: space-between; align-items: flex-start;
+    transition: all 0.2s ease;
+  }
+  .menu-item:hover { border-color: #333; }
+  .menu-item-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .menu-item-info p { font-size: 13px; color: #666; max-width: 240px; }
+  .menu-item-tag {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 4px; margin-top: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .tag-popular { background: rgba(245,166,35,0.15); color: #f5a623; }
+  .tag-new { background: rgba(34,197,94,0.15); color: #22c55e; }
+  .tag-hot { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .menu-price {
+    font-size: 20px; font-weight: 800; color: #f5a623;
+    white-space: nowrap;
+  }
+
+  /* CATEGORY FILTER */
+  .cat-filter { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .cat-filter span {
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    background: #1a1a1a; color: #888; border: 1px solid #222;
+  }
+  .cat-filter span.active { background: rgba(245,166,35,0.15); color: #f5a623; border-color: rgba(245,166,35,0.3); }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
+  }
+  .about-text p { font-size: 15px; color: #999; margin-bottom: 16px; }
+  .about-stats {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .stat-card {
+    background: #141414; border: 1px solid #222; border-radius: 12px;
+    padding: 24px; text-align: center;
+  }
+  .stat-number { font-size: 32px; font-weight: 800; color: #f5a623; font-family: monospace; }
+  .stat-label { font-size: 12px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* TESTIMONIALS */
+  .testimonials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+  .testimonial {
+    background: #141414; border: 1px solid #1e1e1e; border-radius: 12px;
+    padding: 20px;
+  }
+  .testimonial-stars { color: #f5a623; font-size: 14px; margin-bottom: 8px; }
+  .testimonial p { font-size: 13px; color: #999; font-style: italic; margin-bottom: 12px; }
+  .testimonial-author { font-size: 13px; font-weight: 600; color: #ccc; }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+  }
+  .contact-info-card {
+    background: #141414; border: 1px solid #222; border-radius: 12px;
+    padding: 20px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .contact-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(245,166,35,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .contact-info-card h4 { font-size: 13px; font-weight: 600; color: #ccc; }
+  .contact-info-card p { font-size: 13px; color: #777; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; color: #aaa; margin-bottom: 6px; }
+  .form-group input, .form-group textarea {
+    width: 100%; padding: 12px 16px; border-radius: 8px;
+    background: #141414; border: 1px solid #222; color: #fff;
+    font-size: 14px; font-family: system-ui, sans-serif;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    outline: none; border-color: #f5a623;
+  }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+  .btn-submit {
+    background: #f5a623; color: #0a0a0a; font-size: 14px; font-weight: 700;
+    padding: 12px 28px; border: none; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-submit:hover { background: #e6951a; }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid #1a1a1a;
+    padding: 32px; text-align: center;
+    font-size: 13px; color: #444;
+  }
+  .footer span { color: #f5a623; }
+
+  /* HOURS TABLE */
+  .hours-table { width: 100%; margin-top: 16px; }
+  .hours-table td {
+    padding: 8px 0; font-size: 13px; color: #888;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .hours-table td:last-child { text-align: right; color: #ccc; font-weight: 500; }
+
+  /* ANIMATIONS */
+  .fade-in { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .fade-in { animation: fadeIn 0.5s ease-out both; }
+    .d1 { animation-delay: 0.05s; } .d2 { animation-delay: 0.1s; }
+    .d3 { animation-delay: 0.15s; } .d4 { animation-delay: 0.2s; }
+    .d5 { animation-delay: 0.25s; } .d6 { animation-delay: 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV TOGGLES -->
+<input type="radio" name="nav" id="nav-home" class="nav-toggle" checked>
+<input type="radio" name="nav" id="nav-menu" class="nav-toggle">
+<input type="radio" name="nav" id="nav-about" class="nav-toggle">
+<input type="radio" name="nav" id="nav-contact" class="nav-toggle">
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">RD <span>BURGUER</span></div>
+  <div class="nav-links">
+    <label for="nav-home">Início</label>
+    <label for="nav-menu">Cardápio</label>
+    <label for="nav-about">Sobre</label>
+    <label for="nav-contact">Contato</label>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page page-home">
+  <div class="hero">
+    <div class="hero-badge fade-in">🔥 Desde 2020 — Sabor que marca</div>
+    <h1 class="fade-in d1">O melhor burguer<br>da <em>cidade</em></h1>
+    <p class="fade-in d2">Hambúrgueres artesanais feitos com ingredientes selecionados, grelhados na hora e com muito amor.</p>
+    <label for="nav-menu" class="hero-cta fade-in d3">
+      Ver Cardápio
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </label>
+  </div>
+
+  <div class="features">
+    <div class="feature-card fade-in d1">
+      <div class="feature-icon">🥩</div>
+      <h3>Carne Premium</h3>
+      <p>Blend exclusivo de carnes nobres, preparado diariamente</p>
+    </div>
+    <div class="feature-card fade-in d2">
+      <div class="feature-icon">🧀</div>
+      <h3>Ingredientes Frescos</h3>
+      <p>Queijos especiais e vegetais sempre fresquinhos</p>
+    </div>
+    <div class="feature-card fade-in d3">
+      <div class="feature-icon">🚀</div>
+      <h3>Entrega Rápida</h3>
+      <p>Delivery em até 40 minutos na sua porta</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">O que nossos clientes <em>dizem</em></div>
+    <div class="section-sub">Avaliações reais de quem já provou</div>
+    <div class="testimonials">
+      <div class="testimonial fade-in d1">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Melhor hambúrguer que já comi! O blend da carne é sensacional e o atendimento é nota 10."</p>
+        <div class="testimonial-author">— Lucas M.</div>
+      </div>
+      <div class="testimonial fade-in d2">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Pedi o RD Smash e fiquei apaixonada. Virei cliente fiel! Recomendo demais."</p>
+        <div class="testimonial-author">— Ana C.</div>
+      </div>
+      <div class="testimonial fade-in d3">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Ambiente incrível, hambúrguer suculento e batata frita perfeita. Voltarei sempre!"</p>
+        <div class="testimonial-author">— Rafael S.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARDÁPIO -->
+<div class="page page-menu">
+  <div class="section">
+    <div class="section-title">Nosso <em>Cardápio</em></div>
+    <div class="section-sub">Escolha seu favorito — todos feitos na hora</div>
+
+    <div class="cat-filter">
+      <span class="active">🍔 Burguers</span>
+      <span>🍟 Acompanhamentos</span>
+      <span>🥤 Bebidas</span>
+      <span>🍰 Sobremesas</span>
+    </div>
+
+    <div class="menu-grid">
+      <div class="menu-item fade-in d1">
+        <div class="menu-item-info">
+          <h3>RD Classic</h3>
+          <p>Pão brioche, 180g de blend bovino, queijo cheddar, alface, tomate e molho especial</p>
+          <span class="menu-item-tag tag-popular">★ Mais vendido</span>
+        </div>
+        <div class="menu-price">R$ 32</div>
+      </div>
+      <div class="menu-item fade-in d2">
+        <div class="menu-item-info">
+          <h3>RD Smash Duplo</h3>
+          <p>Dois smash burgers de 90g, queijo americano derretido, cebola caramelizada e pickles</p>
+          <span class="menu-item-tag tag-hot">🔥 Picante</span>
+        </div>
+        <div class="menu-price">R$ 38</div>
+      </div>
+      <div class="menu-item fade-in d3">
+        <div class="menu-item-info">
+          <h3>RD Bacon Supreme</h3>
+          <p>Blend 200g, bacon crocante, queijo provolone, onion rings e barbecue defumado</p>
+          <span class="menu-item-tag tag-popular">★ Favorito</span>
+        </div>
+        <div class="menu-price">R$ 42</div>
+      </div>
+      <div class="menu-item fade-in d4">
+        <div class="menu-item-info">
+          <h3>RD Veggie</h3>
+          <p>Hambúrguer de grão-de-bico, queijo muçarela, rúcula, tomate seco e maionese verde</p>
+          <span class="menu-item-tag tag-new">✨ Novo</span>
+        </div>
+        <div class="menu-price">R$ 34</div>
+      </div>
+      <div class="menu-item fade-in d5">
+        <div class="menu-item-info">
+          <h3>RD Trufado</h3>
+          <p>Blend 200g, queijo brie, cogumelos salteados e maionese trufada</p>
+          <span class="menu-item-tag tag-new">✨ Novo</span>
+        </div>
+        <div class="menu-price">R$ 46</div>
+      </div>
+      <div class="menu-item fade-in d6">
+        <div class="menu-item-info">
+          <h3>RD Kids</h3>
+          <p>Mini burguer 100g, queijo, ketchup e batata frita com suco</p>
+        </div>
+        <div class="menu-price">R$ 25</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 32px;">
+      <div class="section-title" style="font-size: 20px;">🍟 Acompanhamentos</div>
+      <div class="menu-grid" style="margin-top: 16px;">
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <h3>Batata Frita Clássica</h3>
+            <p>Crocante por fora, macia por dentro</p>
+          </div>
+          <div class="menu-price">R$ 16</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <h3>Onion Rings</h3>
+            <p>Anéis de cebola empanados e fritos</p>
+          </div>
+          <div class="menu-price">R$ 18</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <h3>Batata com Cheddar & Bacon</h3>
+            <p>Porção generosa com cobertura especial</p>
+          </div>
+          <div class="menu-price">R$ 24</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <h3>Nuggets (10 un.)</h3>
+            <p>Empanados crocantes com molho à escolha</p>
+          </div>
+          <div class="menu-price">R$ 20</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOBRE -->
+<div class="page page-about">
+  <div class="section">
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="section-title fade-in">Nossa <em>História</em></div>
+        <div class="section-sub fade-in d1">Paixão por hambúrguer desde o primeiro dia</div>
+        <p class="fade-in d2">A RD Burguer nasceu em 2020, no meio de uma garagem, com um sonho simples: fazer o melhor hambúrguer artesanal da cidade. O que começou como um hobby entre amigos se transformou em uma das hamburguerias mais amadas da região.</p>
+        <p class="fade-in d3">Nosso segredo? Ingredientes de qualidade, receitas desenvolvidas com carinho e uma equipe apaixonada pelo que faz. Cada hambúrguer é preparado na hora, com blend exclusivo moído diariamente.</p>
+        <p class="fade-in d4">Hoje, atendemos centenas de clientes por semana e continuamos com o mesmo compromisso do primeiro dia: entregar sabor, qualidade e uma experiência inesquecível.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card fade-in d1">
+          <div class="stat-number">6+</div>
+          <div class="stat-label">Anos de história</div>
+        </div>
+        <div class="stat-card fade-in d2">
+          <div class="stat-number">50k+</div>
+          <div class="stat-label">Burguers vendidos</div>
+        </div>
+        <div class="stat-card fade-in d3">
+          <div class="stat-number">4.9</div>
+          <div class="stat-label">Nota no Google</div>
+        </div>
+        <div class="stat-card fade-in d4">
+          <div class="stat-number">15+</div>
+          <div class="stat-label">Itens no cardápio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTATO -->
+<div class="page page-contact">
+  <div class="section">
+    <div class="section-title fade-in">Fale <em>Conosco</em></div>
+    <div class="section-sub fade-in d1">Dúvidas, sugestões ou encomendas? Estamos aqui!</div>
+
+    <div class="contact-grid">
+      <div>
+        <div class="contact-info-card fade-in d1">
+          <div class="contact-icon">📍</div>
+          <div>
+            <h4>Endereço</h4>
+            <p>Rua dos Sabores, 123 — Centro</p>
+          </div>
+        </div>
+        <div class="contact-info-card fade-in d2">
+          <div class="contact-icon">📱</div>
+          <div>
+            <h4>WhatsApp</h4>
+            <p>(21) 96527-4567</p>
+          </div>
+        </div>
+        <div class="contact-info-card fade-in d3">
+          <div class="contact-icon">📧</div>
+          <div>
+            <h4>E-mail</h4>
+            <p>contato@rdburguer.com.br</p>
+          </div>
+        </div>
+        <div class="contact-info-card fade-in d4">
+          <div class="contact-icon">📸</div>
+          <div>
+            <h4>Instagram</h4>
+            <p>@_rdburguer</p>
+          </div>
+        </div>
+
+        <table class="hours-table fade-in d5">
+          <tr><td>Segunda a Quinta</td><td>17h — 23h</td></tr>
+          <tr><td>Sexta e Sábado</td><td>17h — 00h</td></tr>
+          <tr><td>Domingo</td><td>17h — 22h</td></tr>
+        </table>
+      </div>
+
+      <div class="fade-in d3">
+        <div class="form-group">
+          <label>Nome</label>
+          <input type="text" placeholder="Seu nome completo">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="tel" placeholder="(00) 00000-0000">
+        </div>
+        <div class="form-group">
+          <label>Mensagem</label>
+          <textarea placeholder="Escreva sua mensagem..."></textarea>
+        </div>
+        <button class="btn-submit">Enviar Mensagem</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>RD BURGUER</span> © 2026 — Feito com 🔥 e muito sabor
+</div>
+
+</body>
+      </html>
